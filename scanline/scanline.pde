@@ -8,8 +8,10 @@
  Dinamikus: első kattintásra nem történik semmi, a második kattintásig folyamatosan megjelenik az az egyértelmű szakasz, melyet az első kattintás és az egér aktuális pozíciója definiál. Második kattintásra megjelenik az első és a második kattintás által definiált egyértelmű szakasz.)
  */
 Table table;
-boolean closed = false;
+boolean closed = true;
 boolean dynamic = false;
+int bgColor = 204;
+boolean startFill = true;
 
 void setup() {
     size(640, 480);
@@ -20,13 +22,18 @@ void setup() {
 }
 
 void draw() {
-    background(204);
+    background(bgColor);
     drawLines(table);
-
-    textSize(12);
-    text("SHIFT: toggle open/closed shape", 5, 12); 
-    text("TAB:   toggle dynamic drawing", 5, 30);
-    fill(122);
+    //triangle(320, 40, 40, 440, 600, 440);
+    
+    if (table.getRowCount() > 2)
+        scanlineFill();
+        
+    println(frameRate);
+    //textSize(12);
+    //text("SHIFT: toggle open/closed shape", 5, 12); 
+    //text("TAB:   toggle dynamic drawing", 5, 30);
+    //fill(122);
 }
 
 void drawLine(float x, float y, float x0, float y0) {
@@ -57,6 +64,31 @@ void drawLine(float x, float y, float x0, float y0) {
 }
 
 void scanlineFill() {
+    loadPixels();
+    int x1 = 0, x2 = 0;
+    for (int y = 1; y < height; y++) { //<>//
+        startFill = false;
+        for (int x = 1; x < width; x++) {
+            if (pixels[y*width+x] != color(bgColor)) {
+                if (!startFill) {
+                    x1 = x;
+                    x2 = x;
+                    startFill = true;
+                } else {
+                    x2 = x;                    
+                }
+            }            
+        } // sor vége
+        
+        if (x1 == x2 && x1 > 0) {
+            startFill = false;            
+        }
+        
+        if (startFill) {
+            drawLine(x1,y,x2,y);
+            startFill = false;
+        }
+    } // oszlop vége
 }
 
 void drawLines(Table table) {    
