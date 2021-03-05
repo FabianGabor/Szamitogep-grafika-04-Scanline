@@ -11,7 +11,7 @@ Table table;
 boolean closed = true;
 boolean dynamic = false;
 int bgColor = 204;
-boolean startFill = true;
+boolean startFill = false;
 
 void setup() {
     size(640, 480);
@@ -30,10 +30,6 @@ void draw() {
         scanlineFill();
         
     println(frameRate);
-    //textSize(12);
-    //text("SHIFT: toggle open/closed shape", 5, 12); 
-    //text("TAB:   toggle dynamic drawing", 5, 30);
-    //fill(122);
 }
 
 void drawLine(float x, float y, float x0, float y0) {
@@ -67,7 +63,6 @@ void scanlineFill() {
     loadPixels();
     int x1 = 0, x2 = 0;
     for (int y = 1; y < height; y++) { //<>//
-        startFill = false;
         for (int x = 1; x < width; x++) {
             if (pixels[y*width+x] != color(bgColor)) {
                 if (!startFill) {
