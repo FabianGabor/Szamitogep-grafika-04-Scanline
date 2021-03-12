@@ -2,10 +2,7 @@
  * CXNU8T
  */
 /* 
- Készítsen diszkrét szakaszhalmazt megjelenítő alkalmazást statikusan és dinamikusan!
- 
- (Statikus: első kattintásra nem történik semmi, második kattintásra megjelenik az első és a második kattintás által definiált egyértelmű szakasz.
- Dinamikus: első kattintásra nem történik semmi, a második kattintásig folyamatosan megjelenik az az egyértelmű szakasz, melyet az első kattintás és az egér aktuális pozíciója definiál. Második kattintásra megjelenik az első és a második kattintás által definiált egyértelmű szakasz.)
+Készítse el a scanline algoritmust megvalósító függvényt!
  */
 Table table;
 boolean closed = true;
