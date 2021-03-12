@@ -3,14 +3,16 @@
  */
 /*
 Készítse el azt az alkalmazást, mely egy megadott (statikusan vagy dinamikusan) szakaszt alapul véve előállít egy – a szakaszt, 
-mint oldalélt tartalmazó – szabályos háromszöget, majd ezt kitölti, végül a háromszög szerint parkettázza a grafikus felületet! 
-A program futásidőben újabb bemenő adattal állítsa elő a megfelelő modellt úgy, hogy az előző nem látszik!
-*/
+ mint oldalélt tartalmazó – szabályos háromszöget, majd ezt kitölti, végül a háromszög szerint parkettázza a grafikus felületet! 
+ A program futásidőben újabb bemenő adattal állítsa elő a megfelelő modellt úgy, hogy az előző nem látszik!
+ */
 
 Table table;
 boolean closed = true;
 boolean dynamic = false;
 int bgColor = 204;
+
+int xA, yA, xB, yB, xC, yC;
 
 void setup() {
     size(640, 480);
@@ -22,14 +24,13 @@ void setup() {
 
 void draw() {
     background(bgColor);
-    drawLines(table);    
-    
-    /*
-    if (table.getRowCount() > 2)
-        scanlineFill();
-        */
-        
-    println(frameRate);
+    drawLines(table);
+
+    if (table.getRowCount() > 1)
+        parquet(xA, yA, xB, yB, xC, yC);
+    //scanlineFill();
+
+    //println(frameRate);
 }
 
 void drawLine(float x, float y, float x0, float y0) {
@@ -60,18 +61,18 @@ void drawLine(float x, float y, float x0, float y0) {
 }
 
 void drawLines(Table table) {    
-    int xA, yA, xB, yB, xC, yC;
+    //int xA, yA, xB, yB, xC, yC;
 
     if (table.getRowCount()>1) {
         xA = table.getRow(0).getInt("x");
         yA = table.getRow(0).getInt("y");
-    
+
         xB = table.getRow(1).getInt("x");
         yB = table.getRow(1).getInt("y");
-    
+
         xC = (int)(xA + xB + sqrt(3) * (yB - yA) ) / 2;
         yC = (int)(yA + yB + sqrt(3) * (xA - xB) ) / 2;
-    
+
         drawLine(xB, yB, xA, yA);
         drawLine(xC, yC, xA, yA);
         drawLine(xC, yC, xB, yB);
@@ -79,20 +80,43 @@ void drawLines(Table table) {
 
     /*
     if (dynamic) {
-        drawLine(x, y, mouseX, mouseY);
+     drawLine(x, y, mouseX, mouseY);
+     }
+     
+     if (i == 1 && closed) {
+     x0 = table.getRow(0).getInt("x");
+     y0 = table.getRow(0).getInt("y");
+     
+     if (dynamic) {
+     drawLine(x0, y0, mouseX, mouseY);
+     } else {
+     drawLine(x, y, x0, y0);
+     }
+     }
+     */
+}
+
+void parquet(int x1, int y1, int x2, int y2, int x3, int y3) {
+    float m = (y2 - y1) / (x2 - x1);
+    //int dist = abs(x1 - x3);
+    //float dist = sqrt(pow((x1 - x3), 2) + pow((y1 - y3), 2));
+    float dist = abs((y1 - y3 - m * x1) / m);
+    println(dist);
+    
+    int x, y;
+    
+    do {
+        x1 -= dist;
+        x2 -= dist;
+    } while (x1 >= 0 && x2 >= 0);
+    
+    while (x1 <= width && x2 <= width) {
+        drawLine(x1, y1, x2, y2);
+        x1 += dist;
+        x2 += dist;        
     }
 
-    if (i == 1 && closed) {
-        x0 = table.getRow(0).getInt("x");
-        y0 = table.getRow(0).getInt("y");
-
-        if (dynamic) {
-            drawLine(x0, y0, mouseX, mouseY);
-        } else {
-            drawLine(x, y, x0, y0);
-        }
-    }
-    */
+    
 }
 
 void mousePressed() {
@@ -100,8 +124,8 @@ void mousePressed() {
     if (table.getRowCount() == 2) {
         table.clearRows();
     }
-    
+
     TableRow newRow = table.addRow();    
     newRow.setInt("x", mouseX);
-    newRow.setInt("y", mouseY);  
+    newRow.setInt("y", mouseY);
 }
