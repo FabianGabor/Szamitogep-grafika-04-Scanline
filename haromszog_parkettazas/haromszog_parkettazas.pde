@@ -20,17 +20,28 @@ void setup() {
     table = new Table();    
     table.addColumn("x");
     table.addColumn("y");
+    
+    
+    TableRow newRow;    
+    newRow = table.addRow();
+    newRow.setInt("x", 200);
+    newRow.setInt("y", 265);
+    
+    newRow = table.addRow();
+    newRow.setInt("x", 320);
+    newRow.setInt("y", 240);    
+    
+    
 }
 
 void draw() {
     background(bgColor);
     drawLines(table);
 
-    if (table.getRowCount() > 1)
-        parquet(xA, yA, xB, yB, xC, yC);
     //scanlineFill();
 
-    //println(frameRate);
+    if (table.getRowCount() > 1)
+        parquet(xA, yA, xB, yB, xC, yC);
 }
 
 void drawLine(float x, float y, float x0, float y0) {
@@ -77,50 +88,56 @@ void drawLines(Table table) {
         drawLine(xC, yC, xA, yA);
         drawLine(xC, yC, xB, yB);
     }
+}
 
-    /*
-    if (dynamic) {
-     drawLine(x, y, mouseX, mouseY);
-     }
-     
-     if (i == 1 && closed) {
-     x0 = table.getRow(0).getInt("x");
-     y0 = table.getRow(0).getInt("y");
-     
-     if (dynamic) {
-     drawLine(x0, y0, mouseX, mouseY);
-     } else {
-     drawLine(x, y, x0, y0);
-     }
-     }
-     */
+void lineThroughPoint(float m, float x0, float y0) {
+    float x = 0;
+    float yStart = m*x + y0 - m*x0;
+    float yEnd = m*x + y0 - m*x0;
+
+    while (x<width) {
+        x++;
+        yEnd = m*x + y0 - m*x0;
+    }
+    drawLine(0, yStart, x, yEnd);
 }
 
 void parquet(int x1, int y1, int x2, int y2, int x3, int y3) {
-    float m = (y2 - y1) / (x2 - x1);
-    //int dist = abs(x1 - x3);
-    //float dist = sqrt(pow((x1 - x3), 2) + pow((y1 - y3), 2));
-    float dist = abs((y1 - y3 - m * x1) / m);
-    println(dist);
+    float m;
     
-    int x, y;
-    
-    do {
-        x1 -= dist;
-        x2 -= dist;
-    } while (x1 >= 0 && x2 >= 0);
-    
-    while (x1 <= width && x2 <= width) {
-        drawLine(x1, y1, x2, y2);
-        x1 += dist;
-        x2 += dist;        
+    if (x3 != x2) {
+        m = (y3 - y2)*1.0 / (x3 - x2);
+        lineThroughPoint(m, x1, y1);
+        
+        //m = (y3 - y1)*1.0 / (x3 - x1);
+        //lineThroughPoint(m, x2, y2);
+        
+        //m = (y2 - y1)*1.0 / (x2 - x1);
+        //lineThroughPoint(m, x3, y3);
+        
+        float deltaX, deltaY;    
+        float x, y;
+        
+        deltaX = abs(x2-x1);
+        deltaY = abs(y2-y1);
+        x = x1;
+        y = y1;    
+        
+        while (x>0 && y>0) {
+            x-=deltaX;
+            y-=deltaY;
+        }
+        
+        while (abs((y - height - m * x)/m) < width || abs((y - 0 - m * x)/m) < width) {
+            lineThroughPoint(m, x, y);
+            x+=deltaX;
+            y+=deltaY;             //<>//
+        }
     }
-
-    
 }
 
 void mousePressed() {
-    // ellenorizni, hogy csak 2 pont legyen!
+    // ellenorzi, hogy csak 2 pont legyen!
     if (table.getRowCount() == 2) {
         table.clearRows();
     }
