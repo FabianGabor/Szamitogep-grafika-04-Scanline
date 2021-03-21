@@ -38,14 +38,13 @@ void setup() {
 void draw() {
     background(bgColor);
     drawLines(table);
-
+    
     scanlineFill();
     
     if (table.getRowCount() > 1) {
         parquet(xA, yA, xB, yB, xC, yC);
-        parquet(xB, yB, xC, yC, xA, yA);
-        //parquet(xC, yC, xA, yA, xB, yB);
-        parquet(xC, yC, xB, yB, xA, yA); //<>//
+        parquet(xB, yB, xC, yC, xA, yA);        
+        parquet(xC, yC, xB, yB, xA, yA);
     }
 }
 
@@ -106,27 +105,35 @@ void lineThroughPoint(float m, float x0, float y0) {
 }
 
 void parquet(float x1, float y1, float x2, float y2, float x3, float y3) {    
-    float m; //<>//
+    float m;
     
     if (x3 != x2) {
         m = (y3 - y2)*1.0 / (x3 - x2);        
         
-        float deltaX;    
-        float x, y;        
+        float deltaX, deltaY;
+        float x, y;
                 
         deltaX = tan((90.0 - atan(m) * 180 / PI) * PI / 180) * abs(y2-y1);
-        deltaX = abs(abs(x2-x1) - deltaX);        
+        deltaX = abs(abs(x2-x1) - deltaX);
         
-        x = x1;        
+        deltaY = abs(x2-x1) * 1.0 / tan((90.0 - atan(m) * 180 / PI) * PI / 180);
+        deltaY = abs(abs(y2-y1) - deltaY);        
+        println(deltaX + " " + deltaY);
         
-        while (x>0) {
-            x-=deltaX;
+        x = x1;
+        y = y1;
+
+        while (x+deltaX>0 || y+deltaY>0) { //<>//
+            x-=deltaX; //<>//
+            y-=deltaY; //<>//
         }
         
-        //while (abs((y - height - m * x)/m) < width || abs((y - 0 - m * x)/m) < width) {
-        while (x < width) {
+        println(x + " "  + y);
+        
+        while (x-deltaX < width || y-deltaY < height) {
             lineThroughPoint(m, x, y1);
-            x+=deltaX; //<>//
+            x+=deltaX;
+            y+=deltaY;
         }
         
     }
