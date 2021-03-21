@@ -23,7 +23,7 @@ void ferdeHaromszog() {
     
     newRow = table.addRow();
     newRow.setInt("x", 350);
-    newRow.setInt("y", 350); 
+    newRow.setInt("y", 250); 
 }
 
 void vizszintesHaromszog() {
@@ -55,8 +55,8 @@ void setup() {
     table.addColumn("x");
     table.addColumn("y");
     
-    //ferdeHaromszog();
-    vizszintesHaromszog();
+    ferdeHaromszog();
+    //vizszintesHaromszog();
     //fuggolegesHaromszog();
 }
 
@@ -67,9 +67,9 @@ void draw() {
     scanlineFill();
     
     if (table.getRowCount() > 1) {
-        parquet(xA, yA, xB, yB, xC, yC);
-        parquet(xB, yB, xC, yC, xA, yA);        
-        parquet(xC, yC, xB, yB, xA, yA);
+        parquet(xA, yA, xB, yB, xC, yC);        
+        //parquet(xB, yB, xC, yC, xA, yA);        
+        //parquet(xC, yC, xB, yB, xA, yA);
     }
 }
 
@@ -132,25 +132,31 @@ void lineThroughPoint(float m, float x0, float y0) {
 void parquet(float x1, float y1, float x2, float y2, float x3, float y3) {    
     float m; //<>//
     
-    m = (y3 - y2)*1.0 / (x3 - x2);
-    println(x1 + "," + y1 + " " + x2 + "," + y2 + " " + x3 + "," + y3);
+    m = (y3 - y2)*1.0 / (x3 - x2); //<>//
+    //println(x1 + "," + y1 + " " + x2 + "," + y2 + " " + x3 + "," + y3);
     
-    float deltaX, deltaY;
+    float deltaX = 0; 
+    float deltaY = 0;
     float x, y;
 
-    if (y2 != y3) { //<>//
-        deltaX = tan((90.0 - atan(m) * 180 / PI) * PI / 180) * abs(y2-y1);
-        deltaX = abs(abs(x2-x1) - deltaX);
-        
-        deltaY = abs(x2-x1) * 1.0 / tan((90.0 - atan(m) * 180 / PI) * PI / 180);
-        deltaY = abs(abs(y2-y1) - deltaY);            
+    if (y2 != y3) {
+        if (x1 != x3) {
+            deltaX = tan((90.0 - atan(m) * 180 / PI) * PI / 180) * abs(y2-y1);
+            deltaX = abs(abs(x2-x1) - deltaX);
+            
+            deltaY = abs(x2-x1) * 1.0 / tan((90.0 - atan(m) * 180 / PI) * PI / 180);
+            deltaY = abs(abs(y2-y1) - deltaY);
+        } else {
+            deltaY = abs(y1-y3);
+        }
     } else {
         deltaX = abs(x2-x1);
         deltaY = abs(y1-y2);
     }
     
     x = x1;
-    y = y1;
+    y = y1; //<>//
+
 
     while (x+deltaX>0 || y+deltaY>0) { //<>//
         x-=deltaX; //<>//
