@@ -11,6 +11,7 @@ Table table;
 boolean closed = true;
 boolean dynamic = false;
 int bgColor = 204;
+boolean startFill = false;
 
 float xA, yA, xB, yB, xC, yC;
 
@@ -28,8 +29,8 @@ void setup() {
     newRow.setInt("y", 300);
     
     newRow = table.addRow();
-    newRow.setInt("x", 400);
-    newRow.setInt("y", 400);    
+    newRow.setInt("x", 350);
+    newRow.setInt("y", 350);    
     
     
 }
@@ -38,10 +39,13 @@ void draw() {
     background(bgColor);
     drawLines(table);
 
-    //scanlineFill();
-
+    scanlineFill();
+    
     if (table.getRowCount() > 1) {
-        parquet(xA, yA, xB, yB, xC, yC);        
+        parquet(xA, yA, xB, yB, xC, yC);
+        parquet(xB, yB, xC, yC, xA, yA);
+        //parquet(xC, yC, xA, yA, xB, yB);
+        parquet(xC, yC, xB, yB, xA, yA); //<>//
     }
 }
 
@@ -72,9 +76,7 @@ void drawLine(float x, float y, float x0, float y0) {
     }
 }
 
-void drawLines(Table table) {    
-    //int xA, yA, xB, yB, xC, yC;
-
+void drawLines(Table table) {
     if (table.getRowCount()>1) {
         xA = table.getRow(0).getInt("x");
         yA = table.getRow(0).getInt("y");
@@ -129,13 +131,32 @@ void parquet(float x1, float y1, float x2, float y2, float x3, float y3) {
         
     }
 }
+
+void scanlineFill() {
+    loadPixels();
+    int x1 = 0, x2 = 0;
+    for (int y = 1; y < height; y++) {
+        for (int x = 1; x < width; x++) {
+            if (pixels[y*width+x] != color(bgColor)) {
+                if (!startFill) {
+                    x1 = x;
+                    x2 = x;
+                    startFill = true;
+                } else {
+                    x2 = x;                    
+                }
+            }            
+        } // sor vége
+        
+        if (x1 == x2 && x1 > 0) {
+            startFill = false;            
         }
         
-        while (abs((y - height - m * x)/m) < width || abs((y - 0 - m * x)/m) < width) {
-            lineThroughPoint(m, x, y);
+        if (startFill) {
+            drawLine(x1,y,x2,y);
+            startFill = false;
         }
-        
-    }
+    } // oszlop vége
 }
 
 void mousePressed() {
