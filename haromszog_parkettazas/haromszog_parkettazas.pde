@@ -12,7 +12,7 @@ boolean closed = true;
 boolean dynamic = false;
 int bgColor = 204;
 
-int xA, yA, xB, yB, xC, yC;
+float xA, yA, xB, yB, xC, yC;
 
 void setup() {
     size(640, 480);
@@ -82,8 +82,8 @@ void drawLines(Table table) {
         xB = table.getRow(1).getInt("x");
         yB = table.getRow(1).getInt("y");
 
-        xC = (int)(xA + xB + sqrt(3) * (yB - yA) ) / 2;
-        yC = (int)(yA + yB + sqrt(3) * (xA - xB) ) / 2;
+        xC = (xA + xB + sqrt(3) * (yB - yA) ) / 2;
+        yC = (yA + yB + sqrt(3) * (xA - xB) ) / 2;
 
         drawLine(xB, yB, xA, yA);
         drawLine(xC, yC, xA, yA);
@@ -103,38 +103,36 @@ void lineThroughPoint(float m, float x0, float y0) {
     drawLine(0, yStart, x, yEnd);
 }
 
-void parquet(int x1, int y1, int x2, int y2, int x3, int y3) {
-    float m;
+void parquet(float x1, float y1, float x2, float y2, float x3, float y3) {    
+    float m; //<>//
     
     if (x3 != x2) {
-        m = (y3 - y2)*1.0 / (x3 - x2);
-        lineThroughPoint(m, x1, y1);
+        m = (y3 - y2)*1.0 / (x3 - x2);        
         
-        //m = (y3 - y1)*1.0 / (x3 - x1);
-        //lineThroughPoint(m, x2, y2);
-        
-        //m = (y2 - y1)*1.0 / (x2 - x1);
-        //lineThroughPoint(m, x3, y3);
-        
-        float deltaX, deltaY;    
-        float x, y;
-        
+        float deltaX;    
+        float x, y;        
                 
         deltaX = tan((90.0 - atan(m) * 180 / PI) * PI / 180) * abs(y2-y1);
-        deltaX = abs(x2-x1) - deltaX;
-        deltaY = 0;
-        x = x1;
-        y = y1;
+        deltaX = abs(abs(x2-x1) - deltaX);        
         
-        while (x>0 && y>0) {
+        x = x1;        
+        
+        while (x>0) {
             x-=deltaX;
-            y-=deltaY;
+        }
+        
+        //while (abs((y - height - m * x)/m) < width || abs((y - 0 - m * x)/m) < width) {
+        while (x < width) {
+            lineThroughPoint(m, x, y1);
+            x+=deltaX; //<>//
+        }
+        
+    }
+}
         }
         
         while (abs((y - height - m * x)/m) < width || abs((y - 0 - m * x)/m) < width) {
             lineThroughPoint(m, x, y);
-            x+=deltaX;
-            y+=deltaY;             //<>//
         }
         
     }
