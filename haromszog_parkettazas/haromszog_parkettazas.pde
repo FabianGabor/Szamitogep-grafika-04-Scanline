@@ -25,11 +25,11 @@ void setup() {
     TableRow newRow;    
     newRow = table.addRow();
     newRow.setInt("x", 200);
-    newRow.setInt("y", 265);
+    newRow.setInt("y", 300);
     
     newRow = table.addRow();
-    newRow.setInt("x", 320);
-    newRow.setInt("y", 240);    
+    newRow.setInt("x", 400);
+    newRow.setInt("y", 400);    
     
     
 }
@@ -40,8 +40,9 @@ void draw() {
 
     //scanlineFill();
 
-    if (table.getRowCount() > 1)
-        parquet(xA, yA, xB, yB, xC, yC);
+    if (table.getRowCount() > 1) {
+        parquet(xA, yA, xB, yB, xC, yC);        
+    }
 }
 
 void drawLine(float x, float y, float x0, float y0) {
@@ -118,10 +119,12 @@ void parquet(int x1, int y1, int x2, int y2, int x3, int y3) {
         float deltaX, deltaY;    
         float x, y;
         
-        deltaX = abs(x2-x1);
-        deltaY = abs(y2-y1);
+                
+        deltaX = tan((90.0 - atan(m) * 180 / PI) * PI / 180) * abs(y2-y1);
+        deltaX = abs(x2-x1) - deltaX;
+        deltaY = 0;
         x = x1;
-        y = y1;    
+        y = y1;
         
         while (x>0 && y>0) {
             x-=deltaX;
@@ -133,6 +136,7 @@ void parquet(int x1, int y1, int x2, int y2, int x3, int y3) {
             x+=deltaX;
             y+=deltaY;             //<>//
         }
+        
     }
 }
 
