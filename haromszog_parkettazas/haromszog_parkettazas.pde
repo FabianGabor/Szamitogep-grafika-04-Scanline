@@ -68,7 +68,7 @@ void draw() {
     
     if (table.getRowCount() > 1) {
         parquet(xA, yA, xB, yB, xC, yC);        
-        //parquet(xB, yB, xC, yC, xA, yA);        
+        parquet(xB, yB, xC, yC, xA, yA);        
         //parquet(xC, yC, xB, yB, xA, yA);
     }
 }
@@ -145,7 +145,7 @@ void parquet(float x1, float y1, float x2, float y2, float x3, float y3) {
             deltaX = abs(abs(x2-x1) - deltaX);
             
             deltaY = abs(x2-x1) * 1.0 / tan((90.0 - atan(m) * 180 / PI) * PI / 180);
-            deltaY = abs(abs(y2-y1) - deltaY);
+            deltaY = abs(abs(y2-y1) - deltaY);            
         } else {
             deltaY = abs(y1-y3);
         }
